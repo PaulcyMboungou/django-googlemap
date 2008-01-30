@@ -17,7 +17,7 @@ class User(models.Model):
 class UserDirLink(models.Model):
     user  = models.ForeignKey(User)
     direction = models.ForeignKey(GDirection)
-    distmax = models.IntegerField(default=1)
+    distmax = models.IntegerField(default=1, help_text='kilometers')
     zonelat = models.IntegerField(default=0)
     zonelon = models.IntegerField(default=0)
     class Admin:
@@ -26,6 +26,6 @@ class UserDirLink(models.Model):
 class DirLink(models.Model):
     dir1 = models.ForeignKey(GDirection, related_name='link1_set')
     dir2 = models.ForeignKey(GDirection, related_name='link2_set')
-    distmax = models.IntegerField(default=0)
+    distmax = models.IntegerField(default=0, help_text='kilometers')
     class Admin:
         pass
