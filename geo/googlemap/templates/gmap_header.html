@@ -6,8 +6,19 @@
 function initialize() {
   if (GBrowserIsCompatible()) {
     var map = new GMap2(document.getElementById('map'));
-    {{ gmap_map_init_js }}
+    {% if gmap_map_init_js %}
+        {{ gmap_map_init_js }}
+    {% else %}
+		map.addControl(new GSmallMapControl());
+		map.addControl(new GScaleControl());
+		map.setCenter(new GLatLng(47.389982,0.688705), 9); 
+    {% endif %}
+    
     {{ gmap_overlays_init_js }}
+    
+	{% if gmap_overlays_include %}
+	{% include gmap_overlays_include %}
+	{% endif %}
   }
 }
 //]]>
