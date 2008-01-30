@@ -1,0 +1,108 @@
+{% extends "admin/base_site_gmap.html" %}
+{% load adminmedia admin_list i18n %}
+{% block stylesheet %}{% admin_media_prefix %}css/changelists.css{% endblock %}
+{% block bodyclass %}change-list{% endblock %}
+
+{% block body_attrs %}onload="load()" onunload="GUnload()"{% endblock %}
+
+{% block extrahead %}
+{{ block.super }}
+
+{% load gmapkey %}
+<script src="http://maps.google.com/maps?file=api&amp;v=2.x&amp;key={% gmap_secret_key %}" type="text/javascript"></script>
+<script type="text/javascript"> 
+	//<![CDATA[ 
+	
+//*TC* Déclaration de toutes les variables **//
+
+//**		Nom de la carte : map **//
+		var map;
+		
+//**		Centre de la carte nommée 'map' **//
+		var centre;
+		
+//**		marqueur nommé 'monMarqueur' symbolisant le centre du cercle **//
+		var monMarqueur;
+		
+
+//*TC*			Fonction load() **//
+		function load() { 
+
+//*TC*			Si le navigateur est compatible avec l'API de Google Maps ... **//
+			if (GBrowserIsCompatible()) { 
+
+//**				... Création d'une nouvelle carte ayant pour nom 'map' et qui se situera en lieu et place de la <div> ayant pour identifiant (id) 'EmplacementDeMacarte' ... **//
+				map = new GMap2(document.getElementById('EmplacementDemap')); 
+
+//**				... On supprime le zoom par double clique sur la carte nommée 'map' ... **//
+				map.disableDoubleClickZoom();
+
+//**				... Ajout des contrôles : boutons permettant le déplacement et le zoom et affichage de l'échelle ...  **//
+				map.addControl(new GSmallMapControl());
+				map.addControl(new GScaleControl());
+
+//**				... La carte 'Macarte' est centrée sur la Latitude 47.389982, la Longitude 0.688705, avec un niveau de zoom égal à 9 ...  **//
+				map.setCenter(new GLatLng(47.389982,0.688705), 9); 
+
+
+		{% load gmapdata %}
+		{% load_positions cl %}
+
+//**				... Un observateur d'événement est ajouté à la carte appelé 'map'. L'évenement détecté est 'dblclick' (Détecte si un double click est effectué sur le marqueur appelé 'marker'). Si un double-click a été effectué sur la carte appelé 'map', la fonction située entre les {} sera alors executée ... **//
+				GEvent.addListener(map, 'dblclick', function(marker, point) {
+
+
+//**					... un nouveau marqueur nommé 'monMarqueur' est créé. Celui est ancré aux coordonnées géographiques du point 'point' représentant le centre du cercle ... **//
+					monMarqueur = new GMarker(point);
+
+//**					... Affichage du marqueur nommé 'nomMarqueur' sur la carte nommée 'map' ... **//
+					map.addOverlay(monMarqueur);
+
+//**					... la variable 'centre' est égale aux coordonnées géographiques du point central de la carte affichée 'map' ... **//
+					//centre = map.getCenter();
+					pos = monMarqueur.getLatLng()
+					GDownloadUrl('../../../gmap/test/input/addpoint?lat='+escape(pos.lat())+'&lon='+escape(pos.lng()), function(text, code){
+						confirm(code+text)
+						window.location.reload()
+					});
+
+				});
+
+//**			Si le navigateur n'est pas compatible avec l'API de Google Maps ... **//
+			}else{
+
+//**				... affichage du message 'Désolé, mais votre navigateur n'est pas compatible avec Google Maps'. **//
+					alert('Désolé, mais votre navigateur n\'est pas compatible avec Google Maps');			
+			}
+		} 
+
+
+
+	//]]> 
+</script>
+
+{% endblock %}
+
+
+{% if not is_popup %}{% block breadcrumbs %}<div class="breadcrumbs"><a href="../../">{% trans "Home" %}</a> &rsaquo; {{ cl.opts.verbose_name_plural|capfirst|escape }}</div>{% endblock %}{% endif %}
+{% block coltype %}flex{% endblock %}
+{% block content %}
+<div id="content-main">
+{% block object-tools %}
+{% if has_add_permission %}
+<ul class="object-tools"><li><a href="add/{% if is_popup %}?_popup=1{% endif %}" class="addlink">{% blocktrans with cl.opts.verbose_name|escape as name %}Add {{ name }}{% endblocktrans %}</a></li></ul>
+{% endif %}
+{% endblock %}
+<div class="module{% if cl.has_filters %} filtered{% endif %}" id="changelist">
+
+<h2>Double-click below to add a point:</h2>
+<div id="EmplacementDemap" style="width: 600px; height: 300px"></div>
+
+{% block search %}{% search_form cl %}{% endblock %}
+{% block date_hierarchy %}{% date_hierarchy cl %}{% endblock %}
+{% block filters %}{% filters cl %}{% endblock %}
+{% block result_list %}{% result_list cl %}{% endblock %}
+{% block pagination %}{% pagination cl %}{% endblock %}
+</div>
+</div>
+{% endblock %}

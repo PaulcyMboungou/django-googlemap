@@ -1,0 +1,13 @@
+var text_confirm = "<ul><li><a href=.>confirm</a> moving the point.<li><a href=.>Cancel</a>.</ul>"
+
+{% for p in points %}
+    var marker{{ forloop.counter }} = new GMarker(new GLatLng({{ p.lat }}, {{ p.lon }}), {draggable: true});
+    GEvent.addListener(marker{{ forloop.counter }}, "dragstart", function() {
+      map.closeInfoWindow();
+    });
+    GEvent.addListener(marker{{ forloop.counter }}, "dragend", function() {
+      marker{{ forloop.counter }}.openInfoWindowHtml(text_confirm);
+    });
+	map.addOverlay(marker{{ forloop.counter }});
+	
+{% endfor %}
