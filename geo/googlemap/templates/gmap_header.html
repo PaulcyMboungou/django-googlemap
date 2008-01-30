@@ -1,0 +1,14 @@
+{% load gmapkey %}
+<script src="http://maps.google.com/maps?file=api&amp;v=2&amp;key={% gmap_secret_key %}"
+        type="text/javascript"></script>
+<script type="text/javascript">
+//<![CDATA[
+function initialize() {
+  if (GBrowserIsCompatible()) {
+    var map = new GMap2(document.getElementById('map'));
+    {{ gmap_map_init_js }}
+    {{ gmap_overlays_init_js }}
+  }
+}
+//]]>
+</script>
