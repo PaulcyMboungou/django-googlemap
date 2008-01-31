@@ -3,6 +3,10 @@
         type="text/javascript"></script>
 <script type="text/javascript">
 //<![CDATA[
+{% if gmap_global_include %}
+{% include gmap_global_include %}
+{% endif %}
+
 function initialize() {
   if (GBrowserIsCompatible()) {
     var map = new GMap2(document.getElementById('map'));
