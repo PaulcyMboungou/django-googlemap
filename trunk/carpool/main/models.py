@@ -29,3 +29,15 @@ class DirLink(models.Model):
     distmax = models.IntegerField(default=0, help_text='kilometers')
     class Admin:
         pass
+
+    
+class Properties(models.Model):
+    overlay = models.ForeignKey(Overlay)
+    opacity = models.SmallIntegerField(default=100, help_text='0:transparent 100:opaque')
+    color = models.CharField(max_length=7, null=True, blank=True, help_text='#RRGGBB')
+    user = models.ForeignKey(User, null=True, blank=True)
+    class Meta:
+        verbose_name = 'Properties entity'
+        verbose_name_plural = 'Properties entities'
+    class Admin:
+        list_display = ('overlay', 'color', 'opacity', 'user')
