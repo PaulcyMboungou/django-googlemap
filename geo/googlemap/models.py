@@ -78,7 +78,7 @@ class GPoly(models.Model):
     POLY_TYPES = (
                   ('p','polygon'),
                   ('l','polyline'),
-                  ('t','path'),
+                  ('d','direction'),
                   ('c','circle'),
                   ('r','r'),
                   )
@@ -161,11 +161,12 @@ class GDirection(models.Model):
     query = models.CharField(maxlength=100, verbose_name='query', null=True, blank=True)
     start = models.ForeignKey(GLatLng, related_name='start_dirs', null=True, blank=True)
     end = models.ForeignKey(GLatLng, related_name='end_dirs', null=True, blank=True)
+    polyline = models.ForeignKey(GPoly, null=True, blank=True)
     class Meta:
         verbose_name = 'GDirection'
         verbose_name_plural = 'GDirection entities'
     class Admin:
-        list_display = ('id', 'query',)
+        list_display = ('id', 'query', 'start', 'end')
 
 class DirectionStep(models.Model):
     point = models.ForeignKey(GLatLng, core=True)

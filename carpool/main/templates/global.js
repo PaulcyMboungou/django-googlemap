@@ -9,10 +9,10 @@ function setDirections(fromAddress, toAddress, locale) {
 }
 
 function add_dir() {
-    s='add_dir/?dir='
+    s='add_dir/'
     for (i=0; i < gdir.getNumGeocodes(); i++) {
       p = gdir.getMarker(i).getLatLng()
-      s += p.lat()+','+p.lng()+','
+      s += p.lat()+','+p.lng()+'/'
     }
 	GDownloadUrl(s, function(text, code){
 		alert(code+text)
