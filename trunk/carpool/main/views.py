@@ -17,6 +17,7 @@ def main(request, template='carpool_main.html'):
                'gmap_height':400,
                'gmap_overlays_include': 'load_dirs.js',
                'gmap_global_include': 'global.js',
+               'db_dirs': GDirection.objects.all(),
                'neighbour_dirs':None}
     return render_to_response(template, context)
 

@@ -1,4 +1,4 @@
-var map;
+var gmap;
 var gdir;
 var geocoder = null;
 var addressMarker;
@@ -41,3 +41,20 @@ function handleErrors(){
    
 }
 
+function onGDirectionsLoad(){ 
+	var mstart = gdir.getMarker(0)
+	p = mstart.getLatLng()
+	p = new GLatLng(p.lat()-0.001, p.lng())
+    mstart = new GMarker(p, {draggable: true});
+	GEvent.addListener(mstart, "dragend", function() {
+	  mstart.openInfoWindowHtml("Just bouncing along...");
+	});
+    gmap.addOverlay(mstart);
+	
+	var mend = gdir.getMarker(1)
+	mend = new GMarker(mend.getLatLng(), {draggable: true});
+    gmap.addOverlay(mend);
+	GEvent.addListener(mend, "dragend", function() {
+	  mend.openInfoWindowHtml("Just bouncing along...");
+	});
+}
