@@ -7,18 +7,32 @@ from models import UserDirLink, User
 
 from geo.googlemap.models import GDirection, GMarker, GLatLng, GPoly, PolyPoint, Overlay
 
-def main(request, template='carpool_main.html'):
-    if request.method == 'POST':
-        pass
-    else:
-        pass    
-    context = {
-               'gmap_width':600,
+def main(request, template='carpool_main.html', dir_from='Talence', dir_to='Bordeaux'):
+    context = {'dir_from':dir_from,
+               'dir_to':dir_to,
+               'gmap_width':800,
                'gmap_height':400,
                'gmap_overlays_include': 'load_dirs.js',
                'gmap_global_include': 'global.js',
                'db_dirs': GDirection.objects.all(),
                'neighbour_dirs':None}
+
+    if not request.session.get('user_id', default=False):
+        context['user_new']=True
+        request.session['user_id'] = request.META['REMOTE_ADDR']
+        request.session['dir_step'] = 'init'
+        context['user_state'] = 'init'
+    else:
+        context['user_state'] = 'alt'
+    context['user_id'] = request.session['user_id']
+    
+    if request.session['dir_step'] == 'init':
+        pass
+    if request.session['dir_step'] == 'home_set':
+        pass
+    if request.session['dir_step'] == 'work_set':
+        pass
+    
     return render_to_response(template, context)
 
 def add_dir(request, start, end):
@@ -26,7 +40,7 @@ def add_dir(request, start, end):
     p1 = GLatLng.objects.create(lat=float(lat), lon=float(lon))
     lat, lon = end.split(',')
     p2 = GLatLng.objects.create(lat=float(lat), lon=float(lon))
-    overlay=Overlay.objects.create(name='direction', desc='')
+    overlay=Overlay.objects.create()
     poly = GPoly.objects.create(overlay=overlay, type='d')
     dir = GDirection.objects.create(start=p1, end=p2, polyline=poly)
     PolyPoint.objects.create(position=p1, poly=poly, indice=0)
