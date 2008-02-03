@@ -9,15 +9,15 @@ function setDirections(fromAddress, toAddress, locale) {
   document.forms[1].save.disabled = false
 }
 
-function add_dir() {
-    s='add_dir/'
+function add_dir(username) {
+    s='add_dir/' + username + '/'
     for (i=0; i < gdir.getNumGeocodes(); i++) {
       p = gdir.getMarker(i).getLatLng()
       s += p.lat()+','+p.lng()+'/'
     }
 	GDownloadUrl(s, function(text, code){
-		if (code==200) prompt("Itinerary saved");
-		else alert("Error - not saved")
+		if (code==200) alert("Result: "+text);
+		else alert("Error - not saved "+s)
 	});
 }
 
