@@ -1,16 +1,19 @@
 # Django settings for carpool project.
+from os.path import dirname, join 
+_dir = dirname(__file__)
 
 DEBUG = True
 TEMPLATE_DEBUG = DEBUG
+SESSION_COOKIE_AGE = 3600*24*200
 
 ADMINS = (
-    # ('Your Name', 'your_email@domain.com'),
+    ('Eric', 'spango@free.fr'),
 )
 
 MANAGERS = ADMINS
 
 DATABASE_ENGINE = 'sqlite3'           # 'postgresql_psycopg2', 'postgresql', 'mysql', 'sqlite3' or 'oracle'.
-DATABASE_NAME = 'sqlite.db3'             # Or path to database file if using sqlite3.
+DATABASE_NAME = join(_dir, 'sqlite.db3')             # Or path to database file if using sqlite3.
 DATABASE_USER = ''             # Not used with sqlite3.
 DATABASE_PASSWORD = ''         # Not used with sqlite3.
 DATABASE_HOST = ''             # Set to empty string for localhost. Not used with sqlite3.
@@ -21,7 +24,7 @@ DATABASE_PORT = ''             # Set to empty string for default. Not used with 
 # although not all choices may be avilable on all operating systems.
 # If running in a Windows environment this must be set to the same as your
 # system time zone.
-TIME_ZONE = 'America/Chicago'
+TIME_ZONE = 'Europe/Paris'
 
 # Language code for this installation. All choices can be found here:
 # http://www.i18nguy.com/unicode/language-identifiers.html
@@ -35,8 +38,6 @@ USE_I18N = True
 
 # Absolute path to the directory that holds media.
 # Example: "/home/media/media.lawrence.com/"
-from os.path import dirname, join 
-_dir = dirname(__file__)
 MEDIA_ROOT = join(_dir, '../static/')
 
 # URL that handles the media served from MEDIA_ROOT.

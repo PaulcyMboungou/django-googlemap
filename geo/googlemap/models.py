@@ -2,6 +2,7 @@
 # -*- coding: utf-8 -*-
 from django.db import models
 from django.conf import settings
+from django.contrib.auth.models import User, Group
 
 class GLatLng(models.Model):
     lat = models.DecimalField(max_digits=8, decimal_places=2, verbose_name='latitude')
@@ -19,7 +20,7 @@ class GLatLng(models.Model):
         list_display = ('id', 'lat', 'lon')
 
 class GMap2(models.Model):
-    name = models.CharField(maxlength=100, verbose_name='name')
+    name = models.CharField(max_length=100, verbose_name='name')
     center = models.ForeignKey(GLatLng, null=True, blank=True)
     zoom = models.IntegerField(default=13)
     dragging_enabled = models.BooleanField(default=True)
@@ -57,19 +58,26 @@ class GMap2(models.Model):
 
 class Layer(models.Model):
     map = models.ForeignKey(GMap2)
-    name = models.CharField(maxlength=100, verbose_name='name', null=True, blank=True)
+    name = models.CharField(max_length=100, verbose_name='name', null=True, blank=True)
     zorder = models.IntegerField(default=0)
     def __unicode__(self):
         return self.name
     class Admin:
         list_display = ('name', 'map')
+    
+class Style(models.Model):
+    name = models.CharField(max_length=100, verbose_name='name')
+    opacity = models.SmallIntegerField(default=100, help_text='0:transparent 100:opaque')
+    color = models.CharField(max_length=7, null=True, blank=True, help_text='#RRGGBB')
+    class Meta:
+        verbose_name = 'Style'
+    class Admin:
+        list_display = ('name', 'opacity', 'color',)
 
 class Overlay(models.Model):
-    name = models.CharField(maxlength=100, verbose_name='name')
-    desc = models.CharField(maxlength=100, verbose_name='description')
-    zorder = models.IntegerField(default=0)
+    style = models.ForeignKey(Style, null=True, blank=True)
     def __unicode__(self):
-        return self.name
+        return str(self.id)
 
 class Projection(models.Model):
     overlay = models.ForeignKey(Overlay)
@@ -87,7 +95,7 @@ class GPoly(models.Model):
                   ('r','r'),
                   )
     overlay = models.OneToOneField(Overlay)
-    type = models.CharField(maxlength=1, choices=POLY_TYPES)
+    type = models.CharField(max_length=1, choices=POLY_TYPES)
     
     def __unicode__(self):
         return self.overlay.name
@@ -114,7 +122,7 @@ class GIcon(models.Model):
         list_display = ('image', 'shadow', 'display')
 
 class GMarkerOptions(models.Model):
-    title = models.CharField(maxlength=100, verbose_name='title')
+    title = models.CharField(max_length=100, verbose_name='title')
     icon = models.ForeignKey(GIcon, null=True, blank=True)
     clickable = models.BooleanField(default=False)
     draggable = models.BooleanField(default=False)
@@ -163,7 +171,7 @@ class PolyPoint(models.Model):
         list_display = ('poly', 'indice')
 
 class GDirection(models.Model):
-    query = models.CharField(maxlength=100, verbose_name='query', null=True, blank=True)
+    query = models.CharField(max_length=100, verbose_name='query', null=True, blank=True)
     start = models.ForeignKey(GLatLng, related_name='start_dirs', null=True, blank=True)
     end = models.ForeignKey(GLatLng, related_name='end_dirs', null=True, blank=True)
     polyline = models.ForeignKey(GPoly, null=True, blank=True)
@@ -182,3 +190,14 @@ class DirectionStep(models.Model):
     direction = models.ForeignKey(GDirection, edit_inline=True, num_in_admin=1, min_num_in_admin=1, num_extra_on_change=1)
     indice = models.IntegerField()
     
+    
+class Properties(models.Model):
+    overlay = models.ForeignKey(Overlay)
+    desc = models.CharField(max_length=100, verbose_name='description')
+    user = models.ForeignKey(User, null=True, blank=True)
+    date = models.DateTimeField(auto_now_add=True)
+    class Meta:
+        verbose_name = 'Properties entity'
+        verbose_name_plural = 'Properties entities'
+    class Admin:
+        list_display = ('date', 'overlay', 'user')

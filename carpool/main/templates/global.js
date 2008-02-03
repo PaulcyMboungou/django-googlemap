@@ -6,6 +6,7 @@ var addressMarker;
 function setDirections(fromAddress, toAddress, locale) {
   gdir.load("from: " + fromAddress + " to: " + toAddress,
             { "locale": locale });
+  document.forms[1].save.disabled = false
 }
 
 function add_dir() {
@@ -15,7 +16,8 @@ function add_dir() {
       s += p.lat()+','+p.lng()+'/'
     }
 	GDownloadUrl(s, function(text, code){
-		alert(code+text)
+		if (code==200) prompt("Itinerary saved");
+		else alert("Error - not saved")
 	});
 }
 
@@ -42,6 +44,7 @@ function handleErrors(){
 }
 
 function onGDirectionsLoad(){ 
+/*
 	var mstart = gdir.getMarker(0)
 	p = mstart.getLatLng()
 	p = new GLatLng(p.lat()-0.001, p.lng())
@@ -57,4 +60,5 @@ function onGDirectionsLoad(){
 	GEvent.addListener(mend, "dragend", function() {
 	  mend.openInfoWindowHtml("Just bouncing along...");
 	});
+*/
 }
