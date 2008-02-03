@@ -35,7 +35,9 @@ def main(request, template='carpool_main.html', dir_from='Talence', dir_to='Bord
     
     return render_to_response(template, context)
 
-def add_dir(request, start, end):
+def add_dir(request, username, start, end):
+    if UserDirLink.objects.filter(user=username).count() == 1:
+        return HttpResponse("Already exists")
     lat, lon = start.split(',')
     p1 = GLatLng.objects.create(lat=float(lat), lon=float(lon))
     lat, lon = end.split(',')
@@ -45,4 +47,6 @@ def add_dir(request, start, end):
     dir = GDirection.objects.create(start=p1, end=p2, polyline=poly)
     PolyPoint.objects.create(position=p1, poly=poly, indice=0)
     PolyPoint.objects.create(position=p2, poly=poly, indice=1)
-    return HttpResponse("{'dir':%d, 'start':%d, 'end':%d}" % (dir.id, p1.id, p2.id))
+    
+    UserDirLink.objects.create(user=username, direction=dir)
+    return HttpResponse("Saved")

@@ -176,6 +176,9 @@ class GDirection(models.Model):
     end = models.ForeignKey(GLatLng, related_name='end_dirs', null=True, blank=True)
     polyline = models.ForeignKey(GPoly, null=True, blank=True)
     
+    def __unicode__(self):
+        return str(self.id)
+    
     def js(self):
         return 'loadFromWaypoints([%s, %s]);' % (self.start.js(), self.end.js())
 

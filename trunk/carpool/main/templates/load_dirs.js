@@ -3,9 +3,9 @@ gdir = new GDirections(map);
 GEvent.addListener(gdir, "error", handleErrors);
 GEvent.addListener(gdir, "load", onGDirectionsLoad);
 
-dir = new GDirections(map);
 {% for dir in db_dirs %}
-dir.{{ dir.js }}
+dir{{forloop.counter}} = new GDirections(map);
+dir{{forloop.counter}}.{{ dir.js }}
 {% endfor %}
 
 

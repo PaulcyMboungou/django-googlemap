@@ -5,13 +5,13 @@ from geo.googlemap.models import *
 from django.contrib.sessions.models import Session
 
 class UserDirLink(models.Model):
-    session_user  = models.ForeignKey(Session)
+    user  = models.CharField(max_length=100)
     direction = models.ForeignKey(GDirection)
     distmax = models.IntegerField(default=1, help_text='kilometers')
     zonelat = models.IntegerField(default=0)
     zonelon = models.IntegerField(default=0)
     class Admin:
-        list_display = ('session_user', 'direction', 'distmax')
+        list_display = ('user', 'direction', 'distmax')
 
 class DirLink(models.Model):
     dir1 = models.ForeignKey(GDirection, related_name='link1_set')
