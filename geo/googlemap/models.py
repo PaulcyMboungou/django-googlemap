@@ -6,6 +6,10 @@ from django.conf import settings
 class GLatLng(models.Model):
     lat = models.DecimalField(max_digits=8, decimal_places=2, verbose_name='latitude')
     lon = models.DecimalField(max_digits=8, decimal_places=2, verbose_name='longitude')
+    
+    def js(self):
+        return 'new GLatLng(%f,%f)' % (self.lat, self.lon)
+    
     def __unicode__(self):
         return '%f , %f' % (self.lat, self.lon)
     class Meta:
@@ -84,6 +88,7 @@ class GPoly(models.Model):
                   )
     overlay = models.OneToOneField(Overlay)
     type = models.CharField(maxlength=1, choices=POLY_TYPES)
+    
     def __unicode__(self):
         return self.overlay.name
     class Meta:
@@ -162,6 +167,10 @@ class GDirection(models.Model):
     start = models.ForeignKey(GLatLng, related_name='start_dirs', null=True, blank=True)
     end = models.ForeignKey(GLatLng, related_name='end_dirs', null=True, blank=True)
     polyline = models.ForeignKey(GPoly, null=True, blank=True)
+    
+    def js(self):
+        return 'loadFromWaypoints([%s, %s]);' % (self.start.js(), self.end.js())
+
     class Meta:
         verbose_name = 'GDirection'
         verbose_name_plural = 'GDirection entities'
