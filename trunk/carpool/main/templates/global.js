@@ -22,6 +22,7 @@ function add_dir(username) {
 }
 
 function handleErrors(){
+   document.forms[1].save.disabled = true
    if (gdir.getStatus().code == G_GEO_UNKNOWN_ADDRESS)
      alert("No corresponding geographic location could be found for one of the specified addresses. This may be due to the fact that the address is relatively new, or it may be incorrect.\nError code: " + gdir.getStatus().code);
    else if (gdir.getStatus().code == G_GEO_SERVER_ERROR)

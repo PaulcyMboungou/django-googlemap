@@ -13,15 +13,12 @@
      value="{{ dir_to }}" /></td>
    </tr>
 
-   <tr>
-   </tr>
    </table>
   </form>
 
   <form name=saveform action="#" onsubmit="add_dir(this.username.value); return false">
    nickname: <input type="text" size="15" name=username value={{ user_id }}>
-    | <input name="save" type="submit" value="Enregistrer itinéraire" disabled>
-    show others near <input type="text" size="3" value=30> km <input name="submit3" type="submit" value="Update" disabled>
+    | <input name="save" type="submit" value="Save itinerary" disabled>
   </form>
 
 {% extends "gmap_main.html" %}
