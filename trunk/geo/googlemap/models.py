@@ -3,10 +3,14 @@
 from django.db import models
 from django.conf import settings
 from django.contrib.auth.models import User, Group
+from math import sqrt
 
 class GLatLng(models.Model):
     lat = models.DecimalField(max_digits=8, decimal_places=2, verbose_name='latitude')
     lon = models.DecimalField(max_digits=8, decimal_places=2, verbose_name='longitude')
+    
+    def distdeg(self, lat, lon):
+        return sqrt((self.lat - lat)**2 + (self.lon - lon)**2)
     
     def js(self):
         return 'new GLatLng(%f,%f)' % (self.lat, self.lon)
@@ -180,7 +184,7 @@ class GDirection(models.Model):
         return str(self.id)
     
     def js(self):
-        return 'loadFromWaypoints([%s, %s]);' % (self.start.js(), self.end.js())
+        return 'loadFromWaypoints([%s, %s], queryopts);' % (self.start.js(), self.end.js())
 
     class Meta:
         verbose_name = 'GDirection'
