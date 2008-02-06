@@ -4,6 +4,7 @@ from django.newforms import form_for_model, form_for_instance
 from django.shortcuts import render_to_response
 from django.http import HttpResponse
 from models import UserDirLink, User
+from utils import *
 
 from geo.googlemap.models import GDirection, GMarker, GLatLng, GPoly, PolyPoint, Overlay
 
@@ -49,4 +50,7 @@ def add_dir(request, username, start, end):
     PolyPoint.objects.create(position=p2, poly=poly, indice=1)
     
     UserDirLink.objects.create(user=username, direction=dir)
+    
+    create_marker('home', p1)
+    create_marker('work', p2)
     return HttpResponse("Saved")

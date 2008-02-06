@@ -110,12 +110,28 @@ class GPoly(models.Model):
         list_display = ('overlay', 'type',)
 
 class GIcon(models.Model):
+    name = models.CharField(max_length=20, verbose_name='name')
     image = models.ImageField(upload_to='icons')
-    shadow = models.ImageField(upload_to='icons', null=True, blank=True)
+    sizex = models.SmallIntegerField(default=32)
+    sizey = models.SmallIntegerField(default=32)
+    anchorx = models.SmallIntegerField(default=16)
+    anchory = models.SmallIntegerField(default=32)
+    
+    shadow_icon = models.ForeignKey('self', null=True, blank=True, related_name='shadow_parents')
+    print_icon = models.ForeignKey('self', null=True, blank=True, related_name='print_parents')
+    mozprint_icon = models.ForeignKey('self', null=True, blank=True, related_name='mozprint_parents')
+    drag_cross_icon = models.ForeignKey('self', null=True, blank=True, related_name='drag_cross_parents')
 
     def display(self):
         return '<img src=%s>' % self.get_image_url()
     display.allow_tags=True
+    
+    def js(self):
+        code =  'var icon = new GIcon(G_DEFAULT_ICON);'
+        code += 'icon.image = "%s";' % self.get_absolute_url()
+        code += 'icon.iconSize = new GSize(%d, %d);' % (self.sizex, self.sizey)
+        code += 'icon.iconAnchor = new GPoint(%d, %d);' % (self.anchorx, self.anchory)
+        return code
     
     def __unicode__(self):
         return self.image
@@ -123,7 +139,7 @@ class GIcon(models.Model):
         verbose_name = 'GIcon'
         verbose_name_plural = 'GIcon entities'
     class Admin:
-        list_display = ('image', 'shadow', 'display')
+        list_display = ('name', 'image', 'display')
 
 class GMarkerOptions(models.Model):
     title = models.CharField(max_length=100, verbose_name='title')
@@ -185,7 +201,13 @@ class GDirection(models.Model):
     
     def js(self):
         return 'loadFromWaypoints([%s, %s], queryopts);' % (self.start.js(), self.end.js())
-
+    
+    def get_icon_start(self):
+        self.start.gmarker_set.all()[0].options.icon
+        
+    def get_icon_end(self):
+        self.start.gmarker_set.all()[0].options.icon
+        
     class Meta:
         verbose_name = 'GDirection'
         verbose_name_plural = 'GDirection entities'

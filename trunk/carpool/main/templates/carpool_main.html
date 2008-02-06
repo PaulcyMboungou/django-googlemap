@@ -2,7 +2,7 @@
   <form action="#" onsubmit="setDirections(this.from.value, this.to.value, 'fr'); return false">
   <table>
    <tr>
-   <th><input name="submit" type="submit" value="Show itinerary" />
+   <th><input name="submit" type="submit" value="Show itinerary">
    </th>
    <td align="right">From address (Residence)</td>
 
@@ -12,8 +12,8 @@
    <td align="right"><input type="text" size="25" id="toAddress" name="to"
      value="{{ dir_to }}" /></td>
    </tr>
-
    </table>
+   show others near <input type="text" name=distance size="3" value=30> km 
   </form>
 
   <form name=saveform action="#" onsubmit="add_dir(this.username.value); return false">

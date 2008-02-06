@@ -15,6 +15,11 @@ GEvent.addListener(dir{{forloop.counter}}, "load", function() {
 
 {% endfor %}
 
+  var letteredIcon = new GIcon(G_DEFAULT_ICON);
+  letteredIcon.image = "/static/icons/home.png";
+  markerOptions = { 'icon':letteredIcon };
+  var marker = new GMarker(new GLatLng(44,1), markerOptions);
+  gmap.addOverlay(marker);
 
 setDirections("{{ dir_from }}", "{{ dir_to }}", "fr");
 document.forms[1].save.disabled = true
