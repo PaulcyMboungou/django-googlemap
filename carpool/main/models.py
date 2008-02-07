@@ -20,3 +20,15 @@ class DirLink(models.Model):
     class Admin:
         pass
 
+class Plant(models.Model):
+    name = models.CharField(max_length=50, verbose_name='name')
+    desc = models.TextField(verbose_name='description')
+    code = models.CharField(max_length=50, verbose_name='code')
+    position = models.ForeignKey(GLatLng)
+    image = models.ImageField(upload_to='plants')
+    
+    def display(self):
+        return '<img src=%s>' % self.get_image_url()
+    display.allow_tags=True
+    class Admin:
+        list_display = ('name', 'image', 'display', 'position')

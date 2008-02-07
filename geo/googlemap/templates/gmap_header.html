@@ -15,6 +15,7 @@ function initialize() {
     {% else %}
 		map.addControl(new GSmallMapControl());
 		map.addControl(new GScaleControl());
+        map.addControl(new GMapTypeControl());
 		map.setCenter(new GLatLng(47.389982,0.688705), 9); 
     {% endif %}
     
