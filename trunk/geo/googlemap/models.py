@@ -134,7 +134,7 @@ class GIcon(models.Model):
         return code
     
     def __unicode__(self):
-        return self.image
+        return self.name
     class Meta:
         verbose_name = 'GIcon'
         verbose_name_plural = 'GIcon entities'

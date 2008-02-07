@@ -1,0 +1,21 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:v="urn:schemas-microsoft-com:vml">
+  <head>
+    <meta http-equiv="content-type" content="text/html; charset=utf-8"/>
+    <title>Django/Google Map</title>
+    {% include "gmap_header.html" %}
+  </head>
+
+  <body onload="initialize()" onunload="GUnload()">
+ 
+ <form enctype="multipart/form-data" method=post>
+ <table>
+ <tr>
+ <td><table>{{ form }}</table> <input type=submit value=Save></td>
+ <td>{% include "gmap_canvas_div.html" %}</td>
+ </tr>
+ </table>
+ </form>
+  </body>
+</html>

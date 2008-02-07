@@ -3,7 +3,7 @@
 from django.newforms import form_for_model, form_for_instance
 from django.shortcuts import render_to_response
 from django.http import HttpResponse
-from models import UserDirLink, User
+from models import UserDirLink, Plant
 from utils import *
 
 from geo.googlemap.models import GDirection, GMarker, GLatLng, GPoly, PolyPoint, Overlay
@@ -54,3 +54,31 @@ def add_dir(request, username, start, end):
     create_marker('home', p1)
     create_marker('work', p2)
     return HttpResponse("Saved")
+
+
+def plant_add(request, template='plant_form.html'):
+    if request.method == 'POST':
+        form = form_for_model(Plant)
+        data = request.POST.copy()
+        data['position'] = u'3'
+        data['code'] = "abcd"
+        form = form(data, request.FILES)
+        if form.is_valid():
+            #form.save()
+            inst = form.save()
+    else:
+        form = form_for_model(Plant, fields=['name', 'desc', 'image'])
+        form = form()
+    return render_to_response(template, {'form': form, 'gmap_width':300, 'gmap_height':300})
+
+def plant_form(request, id, code, template='plant_form.html'):
+    if request.method == 'POST':
+        form = form(request.POST)
+        if form.is_valid():
+            #form.save()
+            data = form.cleaned_data
+            form.process()
+            return HttpResponseRedirect(redirect)
+    else:
+        form = form()
+    return render_to_response(template, {'form': form})
