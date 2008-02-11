@@ -10,5 +10,5 @@ def gmap_secret_key():
         from django.conf import settings
     except ImportError:
         return ''
-    return settings.SECRET_KEY
+    return settings.GMAP_SECRET_KEY
 gmap_secret_key = register.simple_tag(gmap_secret_key)

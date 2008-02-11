@@ -8,12 +8,22 @@
   </head>
 
   <body onload="initialize()" onunload="GUnload()">
- 
+{{cook}}
+<h1>Add plant</h1>
  <form enctype="multipart/form-data" method=post>
  <table>
  <tr>
- <td><table>{{ form }}</table> <input type=submit value=Save></td>
+ <td>
+ <table>
+ {{ form }}
+  <tr> <td></td><td>Click in the map to fill the fields below</td> </tr>
+  <tr> <td align=right>latitude:</td><td><input type=text name=lat></td> </tr>
+  <tr> <td align=right>longitude:</td><td><input type=text name=lon></td> </tr>
+ 
+ </table> <input type=submit value=Save>
+ </td>
  <td>{% include "gmap_canvas_div.html" %}</td>
+ <tr><td></td><td></td></tr>
  </tr>
  </table>
  </form>
