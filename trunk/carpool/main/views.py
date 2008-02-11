@@ -2,7 +2,7 @@
 # -*- coding: utf-8 -*-
 from django.newforms import form_for_model, form_for_instance
 from django.shortcuts import render_to_response
-from django.http import HttpResponse
+from django.http import HttpResponse, HttpResponseRedirect
 from models import UserDirLink, Plant
 from utils import *
 
@@ -56,29 +56,39 @@ def add_dir(request, username, start, end):
     return HttpResponse("Saved")
 
 
-def plant_add(request, template='plant_form.html'):
+def plant_add(request, template='plant_form.html', gmap_overlays_include='plant_form.js'):
     if request.method == 'POST':
         form = form_for_model(Plant)
         data = request.POST.copy()
-        data['position'] = u'3'
-        data['code'] = "abcd"
+        pos = GLatLng.objects.create(lat=float(data['lat']), lon=float(data['lon']))
+        data['position'] = str(pos.id)
+        code = gen_string()
+        data['code'] = code
         form = form(data, request.FILES)
         if form.is_valid():
             #form.save()
             inst = form.save()
+            return HttpResponseRedirect('../%d/%s/' % (inst.id, inst.code))
     else:
         form = form_for_model(Plant, fields=['name', 'desc', 'image'])
         form = form()
-    return render_to_response(template, {'form': form, 'gmap_width':300, 'gmap_height':300})
+    return render_to_response(template, {'form': form,
+                                         'gmap_width':300,
+                                         'gmap_height':300,
+                                         'gmap_overlays_include':gmap_overlays_include})
 
 def plant_form(request, id, code, template='plant_form.html'):
+    form = form_for_model(Plant)
     if request.method == 'POST':
         form = form(request.POST)
         if form.is_valid():
             #form.save()
-            data = form.cleaned_data
-            form.process()
-            return HttpResponseRedirect(redirect)
+            pass
     else:
         form = form()
     return render_to_response(template, {'form': form})
+
+from whrandom import choice
+import string
+def gen_string(length=32, chars=string.letters + string.digits):
+    return ''.join([choice(chars) for i in range(length)])

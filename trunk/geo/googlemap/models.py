@@ -153,6 +153,13 @@ class GMarkerOptions(models.Model):
         if not self.icon: return 'no icon'
         return '<img src=%s>' % self.icon.get_image_url()
     image.allow_tags=True
+    
+    def js(self):
+        content = ""
+        if self.icon: content += "icon:%s" % self.icon.image.get_absolute_url()
+        code ='{%s}' % content
+        return code
+    
     def __unicode__(self):
         return self.title
     class Meta:
@@ -171,6 +178,13 @@ class GMarker(models.Model):
         if not self.options.icon: return 'no icon'
         return '<img src=%s>' % self.options.icon.get_image_url()
     image.allow_tags=True
+    
+    def js(self):
+        code = 'marker = new GMarker(%s' % position.js()
+        if self.options: code += ', %s' % self.options.js()
+        code += ');'
+        code += 'map.addOverlay(marker);'
+        return code
     
     def __unicode__(self):
         return self.overlay.name
