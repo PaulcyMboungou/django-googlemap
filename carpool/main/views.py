@@ -56,37 +56,42 @@ def add_dir(request, username, start, end):
     return HttpResponse("Saved")
 
 
-def plant_add(request, template='plant_form.html', gmap_overlays_include='plant_form.js'):
-    if request.method == 'POST':
-        form = form_for_model(Plant)
-        data = request.POST.copy()
-        pos = GLatLng.objects.create(lat=float(data['lat']), lon=float(data['lon']))
-        data['position'] = str(pos.id)
-        code = gen_string()
-        data['code'] = code
-        form = form(data, request.FILES)
-        if form.is_valid():
-            #form.save()
-            inst = form.save()
-            return HttpResponseRedirect('../%d/%s/' % (inst.id, inst.code))
-    else:
-        form = form_for_model(Plant, fields=['name', 'desc', 'image'])
+def plant_add(request, id=None, code=None, template='plant_form.html', gmap_overlays_include='plant_form.js'):
+    context = {'gmap_width':300,
+               'gmap_height':300,
+               'gmap_overlays_include':gmap_overlays_include}
+    fields=['name', 'desc']
+    if id and code:
+        context['display_insert'] = True
+        plant = Plant.objects.get(id=int(id), code=code)
+        form = form_for_instance(plant, fields=fields)
         form = form()
-    return render_to_response(template, {'form': form,
-                                         'gmap_width':300,
-                                         'gmap_height':300,
-                                         'gmap_overlays_include':gmap_overlays_include})
+    else:
+        if request.method == 'POST':
+            form = form_for_model(Plant, fields=fields)
+            data = request.POST.copy()
+            pos = GLatLng.objects.create(lat=float(data['lat']), lon=float(data['lon']))
+            data['position'] = str(pos.id)
+            code = gen_string()
+            data['code'] = code
+            form = form(data, request.FILES)
+            if form.is_valid():
+                #form.save()
+                inst = form.save()
+                return HttpResponseRedirect('../%d/%s/' % (inst.id, inst.code))
+        else:
+            form = form_for_model(Plant, fields=fields)
+            form = form()
+    context['form'] = form
+    return render_to_response(template, context)
 
-def plant(request, id, code, template='plant.html'):
-    plant = Plant.objects.get(id=int(id))
+def home_add(request, id, code, template='plant.html'):
+    plant = Plant.objects.get(id=int(id), code=code)
     context = {'gmap_width':800,
                'gmap_height':400,
                'plant': plant,
                'gmap_overlays_include': 'do_plant_dirs.js'}
     return render_to_response(template, context)
-
-def home_add(request, plant_id, code, pos):
-    return None
 
 from whrandom import choice
 import string
