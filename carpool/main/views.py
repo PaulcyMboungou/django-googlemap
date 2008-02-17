@@ -77,16 +77,16 @@ def plant_add(request, template='plant_form.html', gmap_overlays_include='plant_
                                          'gmap_height':300,
                                          'gmap_overlays_include':gmap_overlays_include})
 
-def plant_form(request, id, code, template='plant_form.html'):
-    form = form_for_model(Plant)
-    if request.method == 'POST':
-        form = form(request.POST)
-        if form.is_valid():
-            #form.save()
-            pass
-    else:
-        form = form()
-    return render_to_response(template, {'form': form})
+def plant(request, id, code, template='plant.html'):
+    plant = Plant.objects.get(id=int(id))
+    context = {'gmap_width':800,
+               'gmap_height':400,
+               'plant': plant,
+               'gmap_overlays_include': 'do_plant_dirs.js'}
+    return render_to_response(template, context)
+
+def home_add(request, plant_id, code, pos):
+    return None
 
 from whrandom import choice
 import string
