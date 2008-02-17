@@ -27,8 +27,24 @@ class Plant(models.Model):
     position = models.ForeignKey(GLatLng)
     image = models.ImageField(upload_to='plants')
     
+    def __unicode__(self):
+        return self.name
+    
     def display(self):
         return '<img src=%s>' % self.get_image_url()
     display.allow_tags=True
     class Admin:
         list_display = ('name', 'image', 'display', 'position')
+
+class Home(models.Model):
+    plant = models.ForeignKey(Plant)
+    name = models.CharField(max_length=50, verbose_name='name')
+    desc = models.TextField(verbose_name='description', null=True, blank=True)
+    position = models.ForeignKey(GLatLng)
+    image = models.ImageField(upload_to='homes', null=True, blank=True)
+    def display(self):
+        return '<img src=%s>' % self.get_image_url()
+    display.allow_tags=True
+    class Admin:
+        list_display = ('name', 'plant', 'image', 'display', 'position')
+    
