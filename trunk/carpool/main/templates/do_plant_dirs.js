@@ -1,7 +1,7 @@
-  var icon = new GIcon(G_DEFAULT_ICON);
-  icon.image = "/static/icons/work.png";
-  markerOptions = { 'icon':icon };
-  var marker = new GMarker({{ plant.position.js }}, markerOptions);
+  //var icon = new GIcon(G_DEFAULT_ICON);
+  //icon.image = "/static/icons/work.png";
+  //markerOptions = { 'icon':icon };
+  var marker = new GMarker({{ plant.position.js }});
   map.addOverlay(marker);
 
 var pos;

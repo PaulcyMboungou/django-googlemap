@@ -10,21 +10,29 @@
   <body onload="initialize()" onunload="GUnload()">
 <h1>Add plant</h1>
  <form enctype="multipart/form-data" method=post>
+ <input type=hidden name=lat><input type=hidden name=lon>
  <table>
  <tr>
  <td>
  <table>
  {{ form }}
-  <tr> <td></td><td>Click in the map to fill the fields below</td> </tr>
-  <tr> <td align=right>latitude:</td><td><input type=text name=lat></td> </tr>
-  <tr> <td align=right>longitude:</td><td><input type=text name=lon></td> </tr>
  
- </table> <input type=submit value=Save>
+ </table> <input type=submit name=save_button value=Save disabled>
  </td>
  <td>{% include "gmap_canvas_div.html" %}</td>
  <tr><td></td><td></td></tr>
  </tr>
  </table>
+ {% if display_insert %} 
+ <hr>
+ <p>
+Go to the <a href={{ id }}/{{ code }}/>end user page</a>.
+ <p>
+ You can copy/paste the code below in a web page:<br>
+ <textarea name=insert cols=60, rows=6>
+ {{ insert_content }}
+ </textarea>
+ {% endif %} 
  </form>
   </body>
 </html>
