@@ -24,7 +24,7 @@ class Plant(models.Model):
     name = models.CharField(max_length=50, verbose_name='name')
     desc = models.TextField(verbose_name='description')
     code = models.CharField(max_length=50, verbose_name='code')
-    position = models.ForeignKey(GLatLng)
+    position = models.ForeignKey(GLatLng, null=True, blank=True)
     image = models.ImageField(upload_to='plants')
     
     def __unicode__(self):

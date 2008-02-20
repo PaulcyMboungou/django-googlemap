@@ -63,6 +63,8 @@ def plant_add(request, id=None, code=None, template='plant_form.html', gmap_over
     fields=['name', 'desc']
     if id and code:
         context['display_insert'] = True
+        context['code'] = code
+        context['id'] = id
         plant = Plant.objects.get(id=int(id), code=code)
         form = form_for_instance(plant, fields=fields)
         form = form()
@@ -71,13 +73,14 @@ def plant_add(request, id=None, code=None, template='plant_form.html', gmap_over
             form = form_for_model(Plant, fields=fields)
             data = request.POST.copy()
             pos = GLatLng.objects.create(lat=float(data['lat']), lon=float(data['lon']))
-            data['position'] = str(pos.id)
             code = gen_string()
             data['code'] = code
             form = form(data, request.FILES)
             if form.is_valid():
-                #form.save()
                 inst = form.save()
+                inst.position = pos
+                inst.code = code
+                inst.save()
                 return HttpResponseRedirect('../%d/%s/' % (inst.id, inst.code))
         else:
             form = form_for_model(Plant, fields=fields)
