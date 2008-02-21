@@ -1,0 +1,38 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:v="urn:schemas-microsoft-com:vml">
+  <head>
+    <meta http-equiv="content-type" content="text/html; charset=utf-8"/>
+    <title>Django/Google Map</title>
+    {% include "gmap_header.html" %}
+  </head>
+
+  <body onload="initialize()" onunload="GUnload()">
+<h1>Add plant</h1>
+ <form enctype="multipart/form-data" method=post>
+ <input type=hidden name=lat><input type=hidden name=lon>
+ <table>
+ <tr>
+ <td>
+ <table>
+ {{ form }}
+ 
+ </table> <input type=submit name=save_button value=Save disabled>
+ </td>
+ <td>{% include "gmap_canvas_div.html" %}</td>
+ <tr><td></td><td></td></tr>
+ </tr>
+ </table>
+ {% if display_insert %} 
+ <hr>
+ <p>
+Go to the <a href=add/>end user page</a>.
+ <p>
+ You can copy/paste the code below in a web page:<br>
+ <textarea name=insert cols=60, rows=6>
+ {{ insert_content }}
+ </textarea>
+ {% endif %} 
+ </form>
+  </body>
+</html>

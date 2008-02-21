@@ -1,0 +1,30 @@
+{% load gmapkey %}
+<script src="http://maps.google.com/maps?file=api&amp;v=2&amp;key={% gmap_secret_key %}"
+        type="text/javascript"></script>
+<script type="text/javascript">
+//<![CDATA[
+{% if gmap_global_include %}
+{% include gmap_global_include %}
+{% endif %}
+
+function initialize() {
+  if (GBrowserIsCompatible()) {
+    var map = new GMap2(document.getElementById('map'));
+    {% if gmap_map_init_js %}
+        {{ gmap_map_init_js }}
+    {% else %}
+		map.addControl(new GSmallMapControl());
+		map.addControl(new GScaleControl());
+        map.addControl(new GMapTypeControl());
+		map.setCenter(new GLatLng(47.389982,0.688705), 9); 
+    {% endif %}
+    
+    {{ gmap_overlays_init_js }}
+    
+	{% if gmap_overlays_include %}
+	{% include gmap_overlays_include %}
+	{% endif %}
+  }
+}
+//]]>
+</script>

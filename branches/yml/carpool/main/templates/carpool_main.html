@@ -1,0 +1,26 @@
+{% extends "gmap_main.html" %}
+<h1><img src=http://media.djangoproject.com/img/badges/djangopowered126x54.gif> Carpool demo</h1>
+  <form action="#" onsubmit="setDirections(this.from.value, this.to.value, 'fr'); return false">
+  <table>
+   <tr>
+   <th><input name="submit" type="submit" value="Show itinerary">
+   </th>
+   <td align="right">From address (Residence)</td>
+
+   <td><input type="text" size="25" id="fromAddress" name="from"
+     value="{{ dir_from }}"/></td>
+   <td align="right">To address (Work)</td>
+   <td align="right"><input type="text" size="25" id="toAddress" name="to"
+     value="{{ dir_to }}" /></td>
+   </tr>
+   </table>
+   show others near <input type="text" name=distance size="3" value=30> km 
+  </form>
+
+  <form name=saveform action="#" onsubmit="add_dir(this.username.value); return false">
+   nickname: <input type="text" size="15" name=username value={{ user_id }}>
+    | <input name="save" type="submit" value="Save itinerary" disabled>
+  </form>
+
+
+<br>

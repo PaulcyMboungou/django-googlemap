@@ -1,0 +1,151 @@
+	<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+	<html xmlns="http://www.w3.org/1999/xhtml"  xmlns:v="urn:schemas-microsoft-com:vml" xml:lang="fr">
+	<head>
+	<title>Google Maps - Dessiner un cercle - Faire un rond un disque</title>
+	<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+	<meta name="verify-v1" content="OXNNN8WeqvYuizhk5ok8YRA0DAYoysyryzeBjHBdDXQ=" />
+{% load gmapkey %}
+	<script src="http://maps.google.com/maps?file=api&amp;v=2.x&amp;key={% gmap_secret_key %}" type="text/javascript"></script>
+
+	
+<script type="text/javascript"> 
+	//<![CDATA[ 
+	
+//*TC* Déclaration de toutes les variables **//
+
+//**		Nom de la carte : MaCarte **//
+		var MaCarte;
+
+//**		Nom du cercle : cercle **//
+		var cercle;
+		
+//**		Couleur du cercle **//
+		var cercleCouleur = "#0000ff";
+		
+//**		Epaisseur du trait tracant le cercle (en pixel) **//
+		var cercleEpaisseur = "1";
+		
+//**		Opacité du trait tracant le cercle (de 0 à 1) **//
+		var cercleOpacite = ".5";
+		
+//**		Couleur du disque **//
+		var disqueCouleur = "#0000ff";
+		
+//**		Opacité du disque (de 0 à 1) **//
+		var disqueOpacite = ".1";
+		
+//**		Rayon du cercle en kilometre(s) **//
+		var rayon = 30;
+		
+//**		Nombre de segments composant le cercle **//
+		var segment = 60;
+		
+//**		Centre de la carte nommée 'MaCarte' **//
+		var centre;
+		
+//**		marqueur nommé 'monMarqueur' symbolisant le centre du cercle **//
+		var monMarqueur;
+
+
+	
+//*TC*			Fonction load() **//
+		function load() { 
+
+//*TC*			Si le navigateur est compatible avec l'API de Google Maps ... **//
+			if (GBrowserIsCompatible()) { 
+
+//**				... Création d'une nouvelle carte ayant pour nom 'MaCarte' et qui se situera en lieu et place de la <div> ayant pour identifiant (id) 'EmplacementDeMacarte' ... **//
+				MaCarte = new GMap2(document.getElementById('EmplacementDeMaCarte')); 
+
+//**				... On supprime le zoom par double clique sur la carte nommée 'MaCarte' ... **//
+				MaCarte.disableDoubleClickZoom();
+
+//**				... Ajout des contrôles : boutons permettant le déplacement et le zoom et affichage de l'échelle ...  **//
+				MaCarte.addControl(new GSmallMapControl());
+				MaCarte.addControl(new GScaleControl());
+
+//**				... La carte 'Macarte' est centrée sur la Latitude 47.389982, la Longitude 0.688705, avec un niveau de zoom égal à 9 ...  **//
+				MaCarte.setCenter(new GLatLng(47.389982,0.688705), 9); 
+
+//**				... Un observateur d'événement est ajouté à la carte appelé 'MaCarte'. L'évenement détecté est 'dblclick' (Détecte si un double click est effectué sur le marqueur appelé 'marker'). Si un double-click a été effectué sur la carte appelé 'MaCarte', la fonction située entre les {} sera alors executée ... **//
+				GEvent.addListener(MaCarte, 'dblclick', function(marker, point) {
+
+//**					... Suppression de tous les recouvrements (marqueurs, polyline, info-bulle, etc...) de la carte nommée 'MaCarte' ... **//
+					MaCarte.clearOverlays();
+
+//**					... On centre la carte nommée 'MaCarte' sur le point 'point', et avec le niveau de zoom actuel de la carte ( MaCarte.getZoom() ) ... **//
+					MaCarte.setCenter(point, MaCarte.getZoom());
+
+//**					... un nouveau marqueur nommé 'monMarqueur' est créé. Celui est ancré aux coordonnées géographiques du point 'point' représentant le centre du cercle ... **//
+					monMarqueur = new GMarker(point);
+
+//**					... Affichage du marqueur nommé 'nomMarqueur' sur la carte nommée 'MaCarte' ... **//
+					MaCarte.addOverlay(monMarqueur);
+
+//**					... la variable 'centre' est égale aux coorconnées géographiques du point central de la carte affichée 'MaCarte' ... **//
+					centre = MaCarte.getCenter();
+
+//**					... Appel la fonction dessineUnCercle() pour dessiner le cercle. **//
+					dessineUnCercle();
+				});
+
+//**			Si le navigateur n'est pas compatible avec l'API de Google Maps ... **//
+			}else{
+
+//**				... affichage du message 'Désolé, mais votre navigateur n'est pas compatible avec Google Maps'. **//
+					alert('Désolé, mais votre navigateur n\'est pas compatible avec Google Maps');			
+			}
+		} 
+
+
+
+//*TC*		fonction dessineUnCercle() **//
+		function dessineUnCercle(){
+
+//**			Construction du tableau 'points' contenant toutes les coordonnées des points nécessaires au tracé du cercle **//
+			var latConv = centre.distanceFrom(new GLatLng(centre.lat()+0.1, centre.lng()))/100;
+			var lngConv = centre.distanceFrom(new GLatLng(centre.lat(), centre.lng()+0.1))/100;
+			var points = [];
+			var step = parseInt(360/segment)||10;
+			for(var i=0; i<=360; i+=step){
+				var pint = new GLatLng(centre.lat() + (rayon/latConv * Math.cos(i * Math.PI/180)), centre.lng() + (rayon/lngConv * Math.sin(i * Math.PI/180)));
+				points.push(pint);
+			}
+			
+//**			le cercle 'cercle' est en fait un polygone construit à l'aide des points contenus dans le tableau 'points' **//
+			cercle = new GPolygon(points, cercleCouleur, cercleEpaisseur, cercleOpacite, disqueCouleur, disqueOpacite);
+
+//**			... Affichage du 'cercle' sur la carte nommée 'MaCarte' ... **//
+			MaCarte.addOverlay(cercle);
+		}
+	//]]> 
+</script> 	<link rel="stylesheet" type="text/css" href="http://www.touraineverte.com/Google-Maps/style.css"></link>
+		<link rel="alternate" type="application/rss+xml" href="http://www.touraineverte.com/Google-Maps/rss.xml" title="Google Maps : Exemples et Tutoriels"></link>
+	</head>
+	<body onload="load()" onunload="GUnload()">
+<div id="centre">
+<h2>PRESENTATION</h2>
+<p>Dans cet exemple, nous allons créer un disque sur la carte à chaque fois que vous "double-cliquerez" sur celle-ci.</p>
+
+<ul>
+<li>Le précédent disque est effacé,</li>
+<li> la carte se centre sur le point double-cliqué,</li>
+<li>un nouveau disque s'affiche centré sur ce point.</li>
+</ul>
+<p>Les caractéristiques de ce disque sont :</p>
+<ul>
+<li>Rayon : 30 kilomètres</li>
+<li>Couleur du disque : bleu</li>
+<li>Opacité du disque : .1 (valeur de 0 à 1)</li>
+
+<li>Couleur du cercle autour du disque : bleu</li>
+<li>Opacité du cercle autour du disque : .5 (valeur de 0 à 1)</li>
+<li>Epaisseur du trait du cercle autour du disque : 1 pixel</li>
+</ul>
+
+<h2>RESULTAT</h2>
+<div id="EmplacementDeMaCarte" style="width: 740px; height: 400px"></div>
+<p>
+</body>
+
+</html>
