@@ -1,10 +1,10 @@
 #!/usr/local/bin/python
 # -*- coding: utf-8 -*-
-from django.newforms import form_for_model, form_for_instance
+from django.newforms import ModelForm
 from django.shortcuts import render_to_response
 from django.http import HttpResponse, HttpResponseRedirect
 from models import UserDirLink, Plant
-from utils import *
+#from utils import *
 
 from geo.googlemap.models import GDirection, GMarker, GLatLng, GPoly, PolyPoint, Overlay
 
@@ -55,27 +55,31 @@ def add_dir(request, username, start, end):
     create_marker('work', p2)
     return HttpResponse("Saved")
 
-
+class PlantForm(ModelForm):
+    class Meta:
+        model = Plant
+        fields = ('name', 'desc')
+ 
 def plant_add(request, id=None, code=None, template='plant_form.html', gmap_overlays_include='plant_form.js'):
     context = {'gmap_width':300,
                'gmap_height':300,
                'gmap_overlays_include':gmap_overlays_include}
     fields=['name', 'desc']
+    
     if id and code:
         context['display_insert'] = True
         context['code'] = code
         context['id'] = id
         plant = Plant.objects.get(id=int(id), code=code)
-        form = form_for_instance(plant, fields=fields)
-        form = form()
+        form = PlantForm(instance=plant)
+        
     else:
         if request.method == 'POST':
-            form = form_for_model(Plant, fields=fields)
             data = request.POST.copy()
             pos = GLatLng.objects.create(lat=float(data['lat']), lon=float(data['lon']))
             code = gen_string()
             data['code'] = code
-            form = form(data, request.FILES)
+            form = PlantForm(data, request.FILES)
             if form.is_valid():
                 inst = form.save()
                 inst.position = pos
@@ -83,8 +87,7 @@ def plant_add(request, id=None, code=None, template='plant_form.html', gmap_over
                 inst.save()
                 return HttpResponseRedirect('../%d/%s/' % (inst.id, inst.code))
         else:
-            form = form_for_model(Plant, fields=fields)
-            form = form()
+            form = PlantForm()
     context['form'] = form
     return render_to_response(template, context)
 
@@ -96,7 +99,7 @@ def home_add(request, id, code, template='plant.html'):
                'gmap_overlays_include': 'do_plant_dirs.js'}
     return render_to_response(template, context)
 
-from whrandom import choice
+from random import choice
 import string
 def gen_string(length=32, chars=string.letters + string.digits):
     return ''.join([choice(chars) for i in range(length)])
